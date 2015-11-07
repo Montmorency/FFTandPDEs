@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 def triangle_wave(x):
     if 0.0 <= x <= np.pi:
@@ -83,6 +84,41 @@ class SquareWave(object):
         else:
             return 1.0
 
+class GasDiffusion(object):
+    def __init__(self):
+        self.L    = 20
+        self.D    = 0.06
+        self.delx = 0.1
+	self.xr   = np.arange(0.0, self.L, delx)
+
+    def poison(self, x):
+        if 0.0 <= x <= self.L:
+            fx = x/self.L   
+        return fx
+
+    def initial_dist(self):
+	self.gas = [self.poison(x) for x in self.xr]
+        return
+
+    def fs_diffusion(self, x, N, t):
+        fx = 0.0
+    	for n in range(1, N+1, 2):
+            fx += -4.0/(np.power(np.pi*float(n),2))*np.cos(np.pi*float(n)*x/self.L)*np.exp(-t*self.D*np.power(float(n)*np.pi/self.L,2))
+    	    fx +=  0.5
+    	    return fx
+
+    def animation(self):
+	y = [self.fs_diffusion(x, 5, 0.0) for x in self.xr]
+	plt.plot(self.xr, self.gas,'r', self.xr, y,'b--')
+	tt = np.arange(0.0,1500.0,10)
+        plt.ion()
+	plt.show()
+	for t in tt:
+            y = [self.fs_diffusion(x, 5, t) for x in self.xr]
+    	    plt.plot(self.xr, self.gas,'r',self.xr, y,'b--')
+    	    plt.draw()
+    	    #time.sleep(0.25)
+
 #def fs_2(x,N):
 #    fx = 0.0
 #    for n in range(1,N+1):
@@ -123,13 +159,18 @@ fs_n = [plucked.fs_n(x/(np.pi*delx)) for x in xr]
 plt.plot(xr, string, 'r', xr, fs_string, 'go', xr, fs_n, 'b-')
 plt.show()
 
+
 #Step Function and Sinc Function
 plt.axis([-np.pi, np.pi,-1.5,2.5])
 sqwave = SquareWave()
 square = [sqwave.square(x) for x in xr]
 fs_n   = [np.pi*sqwave.fs_n(x/(np.pi*delx)) for x in xr]
 plt.plot(xr, square, 'r', xr, fs_n, 'b-')
-
 plt.show()
+
+#Diffusion of Gas along a line
+pde = GasDiffusion()
+pde.initial_dist()
+pde.animation()
 
 
