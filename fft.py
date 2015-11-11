@@ -1,5 +1,7 @@
-import numpy as np
+from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
+from matplotlib import cm
+import numpy as np
 import time
 
 def triangle_wave(x):
@@ -43,6 +45,9 @@ class String(object):
     #Few method for 
     def __init__(self):
         self.d = np.pi*0.75
+        self.delx = 0.05
+        self.xr = np.arange(-np.pi,np.pi,self.delx)
+        self.c = 1.0
 
     def string(self, x):
         a = 1.0
@@ -67,6 +72,26 @@ class String(object):
             return 0.0
         else:
             return (2*np.sin(float(n)*self.d))/(np.power(n,2)*self.d*(np.pi-self.d))
+
+    def wave(self, x, N, t):
+        fx = 0.0
+        for n in range(1, N+1):
+            fx += self.fs_n(n)*np.sin(float(n)*x)*np.cos(self.c*n*t)
+        return fx
+
+    def animation(self):
+	tt    = np.arange(0.0, 80.0, 0.1)
+        pluck = [self.string(x) for x in self.xr]
+    	plt.plot(self.xr, pluck,'r')
+        plt.ion()
+        plt.draw()
+        for t in tt:
+            y = [self.wave(x, 12, t) for x in self.xr]
+    	    #plt.plot(self.xr, pluck, 'r', self.xr, y,'b--')
+            plt.axis([0.0, np.pi,-1.5,1.5])
+    	    plt.plot(self.xr, y,'b--')
+    	    plt.draw()
+            plt.clf()
 
 class SquareWave(object):
     def __init__(self):
@@ -119,6 +144,13 @@ class GasDiffusion(object):
     	    plt.draw()
     	    #time.sleep(0.25)
 
+
+def sinxy(x,y,n,m):
+    a = 2.0
+    b = 1.0 
+    fx = np.sin(float(n)*x*np.pi/a)*np.sin(float(m)*y*np.pi/b)
+    return fx 
+
 #def fs_2(x,N):
 #    fx = 0.0
 #    for n in range(1,N+1):
@@ -145,32 +177,121 @@ y2 = [fs_2(x, N) for x in xr]
 #plt.plot(xr, twave,'r', xr, y,'b--', xr, y1, 'g--', xr, y2, 'y--')
 
 #Bumps Fourier Series
-plt.axis([-np.pi, np.pi,0,1.5])
-bumps = [f_bumps(x) for x in xr]
-bumps_fs = [fs_bumps(x, 5) for x in xr]
-plt.plot(xr, bumps, 'r', xr, bumps_fs, 'go')
+#plt.axis([-np.pi, np.pi,0,1.5])
+#bumps = [f_bumps(x) for x in xr]
+#bumps_fs = [fs_bumps(x, 5) for x in xr]
+#plt.plot(xr, bumps, 'r', xr, bumps_fs, 'go')
 
 #Plucked String Fourier Series
-plt.axis([-np.pi, np.pi,-1.5,1.5])
-plucked = String()
-string = [plucked.string(x) for x in xr]
-fs_string = [plucked.fs_string(x,5) for x in xr]
-fs_n = [plucked.fs_n(x/(np.pi*delx)) for x in xr]
-plt.plot(xr, string, 'r', xr, fs_string, 'go', xr, fs_n, 'b-')
-plt.show()
+#plt.axis([-np.pi, np.pi,-1.5,1.5])
+#plucked = String()
+#string = [plucked.string(x) for x in xr]
+#fs_string = [plucked.fs_string(x,5) for x in xr]
+#fs_n = [plucked.fs_n(x/(np.pi*delx)) for x in xr]
+#plt.plot(xr, string, 'r', xr, fs_string, 'go', xr, fs_n, 'b-')
+#plt.show()
 
 
 #Step Function and Sinc Function
-plt.axis([-np.pi, np.pi,-1.5,2.5])
-sqwave = SquareWave()
-square = [sqwave.square(x) for x in xr]
-fs_n   = [np.pi*sqwave.fs_n(x/(np.pi*delx)) for x in xr]
-plt.plot(xr, square, 'r', xr, fs_n, 'b-')
-plt.show()
+#plt.axis([-np.pi, np.pi,-1.5,2.5])
+#sqwave = SquareWave()
+#square = [sqwave.square(x) for x in xr]
+#fs_n   = [np.pi*sqwave.fs_n(x/(np.pi*delx)) for x in xr]
+#plt.plot(xr, square, 'r', xr, fs_n, 'b-')
+#plt.show()
 
 #Diffusion of Gas along a line
-pde = GasDiffusion()
-pde.initial_dist()
-pde.animation()
+#pde = GasDiffusion()
+#pde.initial_dist()
+#pde.animation()
 
+#Plucked String Fourier Series
+plt.axis([-np.pi, np.pi, -1.5, 1.5])
+plucked = String()
+N = 10
+#For D=0.75*pi
+string = [plucked.string(x) for x in xr]
+fs_string = [plucked.fs_string(x,N) for x in xr]
+fs_n = [plucked.fs_n(x/(2*np.pi*np.pi*delx)) for x in xr]
+xn = [float(n) for n in range(-4,4)]
+fs_np = [plucked.fs_n(float(n)) for n in range(-4,4)]
+plt.plot(xr, string, 'r', xr, fs_string, 'bx', xn, fs_np, 'bo', xr, fs_n, 'b-')
+#plt.show()
+
+#For D=0.51*pi
+triangle = String()
+plt.axis([-np.pi, np.pi,-1.5,1.5])
+triangle.d = 0.51*np.pi
+string = [triangle.string(x) for x in xr]
+fs_string = [triangle.fs_string(x,N) for x in xr]
+fs_n = [triangle.fs_n(x/(2*np.pi*np.pi*delx)) for x in xr]
+xn = [float(n) for n in range(-4,4)]
+fs_np = [triangle.fs_n(float(n)) for n in range(-4,4)]
+plt.plot(xr, string, 'r', xr, fs_string, 'gx', xn, fs_np, 'go', xr, fs_n, 'g-')
+plt.show()
+
+#Animation for Different String Configurations
+#plucked.animation()
+plucked.d = 0.51*np.pi
+#plucked.animation()
+#Harmonic Modes of a 2d Rectangle.
+
+X, Y = np.meshgrid(np.linspace(0,2,101),np.linspace(0,1,101))
+Z = np.zeros(X.shape)
+for i in range(X.shape[0]):
+    for j in range(X.shape[0]):
+        Z[i,j] = sinxy(X[i,j], Y[i,j], 3, 1)
+
+fig  = plt.figure()
+fig1 = plt.figure()
+fig2 = plt.figure()
+
+ax = fig.gca(projection='3d')
+ax.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.3)
+cset = ax.contourf(X, Y, Z, zdir='z', offset=-2, cmap=cm.coolwarm)
+cset = ax.contourf(X, Y, Z, zdir='x', offset=0, cmap=cm.coolwarm)
+cset = ax.contourf(X, Y, Z, zdir='y', offset=1, cmap=cm.coolwarm)
+
+for i in range(X.shape[0]):
+    for j in range(X.shape[0]):
+        Z[i,j] = sinxy(X[i,j], Y[i,j], 1, 1)
+
+bx = fig1.gca(projection='3d')
+bx.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.3)
+cset = bx.contourf(X, Y, Z, zdir='z', offset=-2, cmap=cm.coolwarm)
+cset = bx.contourf(X, Y, Z, zdir='x', offset=0, cmap=cm.coolwarm)
+cset = bx.contourf(X, Y, Z, zdir='y', offset=1, cmap=cm.coolwarm)
+
+for i in range(X.shape[0]):
+    for j in range(X.shape[0]):
+        Z[i,j] = sinxy(X[i,j], Y[i,j], 2, 1)
+
+cx = fig2.gca(projection='3d')
+cx.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.3)
+cset = cx.contourf(X, Y, Z, zdir='z', offset=-2, cmap=cm.coolwarm)
+cset = cx.contourf(X, Y, Z, zdir='x', offset=0, cmap=cm.coolwarm)
+cset = cx.contourf(X, Y, Z, zdir='y', offset=1, cmap=cm.coolwarm)
+
+ax.set_xlabel('X')
+ax.set_xlim(0, 2)
+ax.set_ylabel('Y')
+ax.set_ylim(0, 2)
+ax.set_zlabel('Z')
+ax.set_zlim(-2, 2)
+
+bx.set_xlabel('X')
+bx.set_xlim(0, 2)
+bx.set_ylabel('Y')
+bx.set_ylim(0, 2)
+bx.set_zlabel('Z')
+bx.set_zlim(-2, 2)
+
+cx.set_xlabel('X')
+cx.set_xlim(0, 2)
+cx.set_ylabel('Y')
+cx.set_ylim(0, 2)
+cx.set_zlabel('Z')
+cx.set_zlim(-2, 2)
+
+plt.show()
 
