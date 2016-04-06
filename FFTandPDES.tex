@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{default}
+\usepackage{graphicx}
+\usepackage[sort&compress]{natbib}
+
+\def\r{{\bf r}}
+\def\rp{{\bf r^\prime}}
+\def\k{{\bf k}}
+\def\q{{\bf q}}
+\def\G{{\bf G}}
+\def\R{{\bf R}}
+\def\Gp{{\bf G^\prime}}
+\def\sig{$\Sigma$}
+\def\inveps{\varepsilon^{-1}}
+\def\eps{\varepsilon}
+\def\symm{\left\{\mathcal{S}|\mathbf{v}\right\}}
+\def\S{\mathcal{S}}
+\def\rt{\tilde{r}}
+\def\pt{\tilde{p}}
+\def\T{\hat{T}}
+\def\bra{\langle}
+\def\ket{\rangle}
+\def\field{\hat{\psi}}
+\def\cfield{\hat{\psi}^{\dagger}}
+\def\I{\hat{I}}
+\def\E{\varepsilon}
+\def\H{\hat{H}}
+\def\v{\mathbf{v}}
+\def\Gs{\mathcal{G}}
+\def\P{\hat{P}_{\rm occ}}
+
+\begin{document}
+Fourier Transforms do them all once (or better yet three times), remember them forever. If you forget. Look them up here:
+\section{Gaussian Function}
+%
+\begin{equation}
+f(\omega) = \int_{-\infty}^{+\infty} e^{\frac{-t^{2}}{\sigma}} e^{-i\omega t} dt
+\end{equation}
+%
+\begin{equation}
+f(\omega) = \int_{-\infty}^{+\infty} e^{-(\frac{t^{2}}{\sigma} + i\omega t)} dt
+\end{equation}
+%
+\begin{equation}
+f(\omega) = \int_{-\infty}^{+\infty} e^{-(\frac{t^{2}}{\sigma} + i\omega t)} dt
+\end{equation}
+%
+Complete the square of the argument in the exponential to obtain:
+
+%
+\begin{equation}
+f(\omega) = e^{-\frac{\omega^{2} \sigma}{4}} \int_{-\infty}^{+\infty} e^{-(\frac{t}{\sqrt{\sigma}} + \frac{i\omega \sqrt{\sigma}}{2})^{2}} dt
+\end{equation}
+%
+The final step involves a change of variables $x = \frac{t}{\sqrt{\sigma}} + \frac{i\omega\sqrt{\sigma}}{2}$.
+%
+\begin{equation}
+f(\omega) = \sqrt{\sigma}e^{-\frac{\omega^{2} \sigma}{4}} \int_{-\infty}^{+\infty} e^{-x^{2}} dt
+\end{equation}
+%
+\begin{equation}
+f(\omega) = \sqrt{\sigma \pi} e^{-\frac{\omega^{2} \sigma}{4}} 
+\end{equation}
+%
+Why is this change of variables permissible? Consider a plot of the Gaussian in the entire complex plane. If the imaginary part in our exponential
+goes to zero we recover a normal Gaussian function. As the imaginary part increases the center of this Gaussian is displaced into the complex plane.
+Though, now, for purely real arguments the function has an oscillatory behaviour, which might be difficult to integrate,
+the change of variables allows us to shift the function back onto the real line and evaluate the integral directly.
+%
+For large $\sigma$ we have a very narrow distribution in $\omega$.
+
+\section{Sawtooth Wave Function}
+%
+To obtain the generic Fourier transform of the Sawtooth Wave Function we will 
+first consider the simplest case. Then scale and transform the resulting
+Fourier series to obtain a saw tooth for generic cases.
+The function f(x) will move range from $[-1:1]$ linearly across
+the domain $[-\pi, \pi]$. The function is \emph{odd} and we
+will therefore only consider $b_{n}\sin{(nx)}$ components: 
+
+The integral is then:
+%
+\begin{equation}
+b_{n} = \frac{1}{\pi} \int_{-\pi}^{\pi} \frac{x}{\pi} \sin(nx) dx
+\end{equation}
+%
+A single integration by parts gives:
+%
+\begin{equation}
+b_{n} = \frac{1}{\pi^{2}}\left[\frac{-[x \cos(nx)]_{-\pi}^{+\pi}}{n} + \int_{-\pi}^{+\pi} \frac{\cos(nx)}{n} dx\right]
+\end{equation}
+%
+The second term is zero. The first term when expanded yields the sum of two cosine functions with 
+an argument $n\pi$. Since n is an integer the sum of the cosine terms will be either positive
+or negative depending on whether n is odd or even. The final expression for the $b_{n}$ coefficients
+can now be written:
+%
+\begin{equation}
+b_{n} = \frac{2(-1)^{n+1}}{n \pi}
+\end{equation}
+%
+So the Fourier series for the sawtooth becomes:
+%
+\begin{equation}
+f(x) = \sum_{n=1}^{\infty} (\frac{2(-1)^{n+1}}{n\pi})\sin(nx)
+\end{equation}
+%
+
+For functions with a frequency $f$ a single cycle is completed in the time $T$.
+This is just the identity of the frequency and the period $fT=1$. In order for
+our $sin$ function to complete an entire oscillation in the same period let
+us replace its argument ($nx$) with ($2\pi f t$). Similarly the function's
+amplitude can be scaled by $A$ and the function can be displaced along the
+y-axis.
+%
+\begin{equation}
+f(t) = c + \sum_{n=1}^{\infty} \frac{2(-1)^{n+1}}{n\pi}\sin(2\pi n ft)
+\end{equation}
+%
+\bibliographystyle{unsrtnat}
+\scriptsize
+\bibliography{/users2/lambert/Documents/Bibliography/bibliography.bib}
+\end{document}
