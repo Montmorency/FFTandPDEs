@@ -1,4 +1,4 @@
-#FFTs, PDEs and Useful Computer stuff
+#FFTs, PDEs, and Useful Computer stuff
 
 Originally this repo was a series of Python scripts to plot 
 some common Fourier series and the time evolution of a 
