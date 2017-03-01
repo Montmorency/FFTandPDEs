@@ -12,3 +12,5 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
   endif
 
+#want files to have numbers in the bottom right hand corner
+set ruler
